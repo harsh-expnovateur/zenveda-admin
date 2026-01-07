@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiLogIn, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import Swal from "sweetalert2";
-import logo from "/img/logo-2.png"; // 🔁 change to your logo path
+import axiosInstance from "../utils/axiosInstance";
+import logo from "/img/logo-2.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,21 +20,16 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include", // IMPORTANT for httpOnly refresh token
+      const { data } = await axiosInstance.post("/auth/login", {
+        email,
+        password,
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Login failed");
-
-      // 🔐 Keep existing logic
+      // Store access token and user info
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // 🌟 Beautiful success message
+      // Success message
       await Swal.fire({
         title: "Welcome Back 🎉",
         text: "You have successfully signed in",
@@ -51,7 +47,28 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      const errorData = err.response?.data;
+
+      // 🔒 Account Deactivated handling
+      if (
+        err.response?.status === 403 &&
+        errorData?.error?.toLowerCase().includes("inactive")
+      ) {
+        await Swal.fire({
+          icon: "error",
+          title: "Account Deactivated",
+          text: "Your account has been deactivated. Please contact the administrator for assistance.",
+          confirmButtonColor: "#ef4444",
+          confirmButtonText: "OK",
+          background: "#0f172a",
+          color: "#fff",
+        });
+
+        setError(""); // don't show inline error box
+      } else {
+        const message = errorData?.error || err.message || "Login failed";
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
@@ -59,16 +76,9 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Card */}
       <div className="relative w-[380px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-8">
-        
-        {/* Logo */}
         <div className="flex justify-center mb-6">
-          <img
-            src={logo}
-            alt="Logo"
-            className="h-14 drop-shadow-lg"
-          />
+          <img src={logo} alt="Logo" className="h-14 drop-shadow-lg" />
         </div>
 
         <h2 className="text-center text-2xl font-semibold text-white mb-1">
@@ -85,7 +95,6 @@ const Login = () => {
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
-          {/* Email */}
           <div className="relative">
             <FiMail className="absolute left-4 top-3.5 text-gray-400" />
             <input
@@ -98,7 +107,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
           <div className="relative">
             <FiLock className="absolute left-4 top-3.5 text-gray-400" />
             <input
@@ -127,7 +135,6 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}

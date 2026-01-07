@@ -16,14 +16,17 @@ import TeaManagement from "./pages/TeaManagement";
 import Login from "./pages/Login";
 import ManageIngredients from "./pages/ManageIngredients";
 import DiscountManagement from "./pages/DiscountManagement";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Settings from "./pages/Settings";
+import ManageUsers from "./pages/ManageUsers";
 
 const Layout = () => {
   const location = useLocation();
 
-  // 🔑 Login page detection
+  // Login page detection
   const isLoginPage = location.pathname === "/";
 
-  // 🔑 Single source of truth for sidebar
+  // Single source of truth for sidebar
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -56,15 +59,70 @@ const Layout = () => {
         <main className={`${!isLoginPage ? "pt-16" : ""} w-full`}>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/orders" element={<OrderManagement />} />
-            <Route path="/customers" element={<CustomerManagement />} />
-            <Route path="/tea-management" element={<TeaManagement />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <OrderManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/customers"
+              element={
+                <ProtectedRoute>
+                  <CustomerManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tea-management"
+              element={
+                <ProtectedRoute>
+                  <TeaManagement />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/manage-ingredients"
-              element={<ManageIngredients />}
+              element={
+                <ProtectedRoute>
+                  <ManageIngredients />
+                </ProtectedRoute>
+              }
             />
-            <Route path="/discount" element={<DiscountManagement />} />
+            <Route
+              path="/discount"
+              element={
+                <ProtectedRoute>
+                  <DiscountManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/manage-users"
+              element={
+                <ProtectedRoute>
+                  <ManageUsers />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </main>
       </div>
@@ -75,7 +133,7 @@ const Layout = () => {
 const App = () => {
   return (
     <>
-      {/* 🌿 GLOBAL TOASTER */}
+      {/* GLOBAL TOASTER */}
       <Toaster
         position="top-right"
         toastOptions={{

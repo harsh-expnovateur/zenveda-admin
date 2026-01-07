@@ -13,35 +13,13 @@ import {
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from "/img/logo-2.png";
+import { useLogout } from "../hooks/useLogout";
+
 import toast from "react-hot-toast";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
+  const logout = useLogout();
   const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await fetch("http://localhost:5000/api/auth/logout", {
-        method: "POST",
-        credentials: "include", // IMPORTANT for httpOnly refresh token
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      // Clear frontend auth state
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-
-      toast.success("Logged out successfully 🌿");
-
-      // Small delay for better UX
-      setTimeout(() => {
-        navigate("/");
-      }, 600);
-    } catch (err) {
-      toast.error("Logout failed. Please try again.");
-    }
-  };
 
   const menuItems = [
     { icon: FiHome, title: "Dashboard", path: "/dashboard" },
@@ -144,7 +122,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
       {/* Logout */}
       <div className="absolute bottom-6 w-full px-3">
         <button
-          onClick={handleLogout}
+          onClick={logout}
           className="group relative flex items-center gap-4 w-full px-4 py-3 
     rounded-xl text-gray-300 hover:bg-red-500/10 hover:text-red-400 
     transition-all duration-300"

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axiosInstance from "../utils/axiosInstance";
 import {
   BarChart,
   Bar,
@@ -12,14 +13,18 @@ import {
 
 const Card = ({ title, value, change }) => {
   const isPositive = parseFloat(change) >= 0;
-  
+
   return (
     <div className="bg-white rounded-xl shadow p-6">
       <p className="text-gray-500 text-sm mb-2">{title}</p>
       <h2 className="text-3xl font-bold text-gray-800">{value}</h2>
       {change && (
-        <p className={`text-sm mt-2 ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-          {isPositive ? '▲' : '▼'} {Math.abs(parseFloat(change))}% vs last month
+        <p
+          className={`text-sm mt-2 ${
+            isPositive ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {isPositive ? "▲" : "▼"} {Math.abs(parseFloat(change))}% vs last month
         </p>
       )}
     </div>
@@ -39,11 +44,6 @@ const Dashboard = () => {
   const [monthlySalesData, setMonthlySalesData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Get access token from localStorage
-  const getAccessToken = () => {
-    return localStorage.getItem("token");
-  };
-
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -51,10 +51,7 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      await Promise.all([
-        fetchStats(),
-        fetchMonthlySales(),
-      ]);
+      await Promise.all([fetchStats(), fetchMonthlySales()]);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -64,12 +61,8 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/orders/dashboard/stats", {
-        headers: {
-          Authorization: `Bearer ${getAccessToken()}`,
-        },
-      });
-      const data = await response.json();
+      const { data } = await axiosInstance.get("/admin/orders/dashboard/stats");
+
       if (data.success) {
         setStats(data.stats);
       }
@@ -80,17 +73,17 @@ const Dashboard = () => {
 
   const fetchMonthlySales = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/orders/dashboard/monthly-sales", {
-        headers: {
-          Authorization: `Bearer ${getAccessToken()}`,
-        },
-      });
-      const data = await response.json();
+      const { data } = await axiosInstance.get(
+        "/admin/orders/dashboard/monthly-sales"
+      );
+
       if (data.success) {
-        setMonthlySalesData(data.data.map(item => ({
-          month: item.month,
-          sales: parseFloat(item.total_sales),
-        })));
+        setMonthlySalesData(
+          data.data.map((item) => ({
+            month: item.month,
+            sales: Number(item.total_sales),
+          }))
+        );
       }
     } catch (error) {
       console.error("Error fetching monthly sales:", error);
@@ -98,9 +91,9 @@ const Dashboard = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       maximumFractionDigits: 0,
     }).format(amount);
   };
@@ -126,18 +119,18 @@ const Dashboard = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card 
-          title="Total Sales" 
+        <Card
+          title="Total Sales"
           value={formatCurrency(stats.totalSales)}
           change={stats.salesChange}
         />
-        <Card 
-          title="Total Orders" 
+        <Card
+          title="Total Orders"
           value={formatLargeNumber(stats.totalOrders)}
           change={stats.ordersChange}
         />
-        <Card 
-          title="Pending & Cancelled" 
+        <Card
+          title="Pending & Cancelled"
           value={`${stats.pendingCount} / ${stats.cancelledCount}`}
           change={stats.pendingCancelledChange}
         />
@@ -150,29 +143,29 @@ const Dashboard = () => {
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={monthlySalesData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis 
-                dataKey="month" 
-                tick={{ fill: '#666' }}
-                axisLine={{ stroke: '#e0e0e0' }}
+              <XAxis
+                dataKey="month"
+                tick={{ fill: "#666" }}
+                axisLine={{ stroke: "#e0e0e0" }}
               />
-              <YAxis 
-                tick={{ fill: '#666' }}
-                axisLine={{ stroke: '#e0e0e0' }}
+              <YAxis
+                tick={{ fill: "#666" }}
+                axisLine={{ stroke: "#e0e0e0" }}
                 tickFormatter={(value) => `₹${formatLargeNumber(value)}`}
               />
-              <Tooltip 
-                formatter={(value) => [formatCurrency(value), 'Sales']}
+              <Tooltip
+                formatter={(value) => [formatCurrency(value), "Sales"]}
                 contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '8px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  backgroundColor: "#fff",
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 }}
               />
               <Legend />
-              <Bar 
-                dataKey="sales" 
-                fill="#16a34a" 
+              <Bar
+                dataKey="sales"
+                fill="#16a34a"
                 radius={[8, 8, 0, 0]}
                 name="Sales Amount"
               />
