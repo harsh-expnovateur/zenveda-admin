@@ -1,3 +1,4 @@
+import PermissionGuard from "../components/PermissionGuard";
 import React, { useState, useEffect } from "react";
 import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 import AddUserModal from "../components/AddUserModal";
@@ -29,7 +30,7 @@ const ManageUsers = () => {
   const fetchUsers = async () => {
     try {
       const { data } = await axios.get(`${API_URL}/api/admin/users`, {
-        headers: { Authorization: `Bearer ${getToken()}` }
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
       setUsers(data.users);
     } catch (err) {
@@ -42,9 +43,12 @@ const ManageUsers = () => {
   // Fetch permissions
   const fetchPermissions = async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/api/admin/users/permissions`, {
-        headers: { Authorization: `Bearer ${getToken()}` }
-      });
+      const { data } = await axios.get(
+        `${API_URL}/api/admin/users/permissions`,
+        {
+          headers: { Authorization: `Bearer ${getToken()}` },
+        }
+      );
       setAllPermissions(data.permissions);
     } catch (err) {
       toast.error("Failed to fetch permissions");
@@ -70,7 +74,7 @@ const ManageUsers = () => {
     if (permissions.length === allPermissions.length) {
       setPermissions([]);
     } else {
-      setPermissions(allPermissions.map(p => p.key));
+      setPermissions(allPermissions.map((p) => p.key));
     }
   };
 
@@ -112,9 +116,10 @@ const ManageUsers = () => {
       }
 
       // Admin role gets all permissions automatically
-      const finalPermissions = form.role.toLowerCase() === "admin" 
-        ? allPermissions.map(p => p.key) 
-        : permissions;
+      const finalPermissions =
+        form.role.toLowerCase() === "admin"
+          ? allPermissions.map((p) => p.key)
+          : permissions;
 
       if (mode === "add") {
         await axios.post(
@@ -124,7 +129,7 @@ const ManageUsers = () => {
             email: form.email,
             role: form.role,
             isActive: form.isActive,
-            permissions: finalPermissions
+            permissions: finalPermissions,
           },
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -137,7 +142,7 @@ const ManageUsers = () => {
             email: form.email,
             role: form.role,
             isActive: form.isActive,
-            permissions: finalPermissions
+            permissions: finalPermissions,
           },
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -160,7 +165,7 @@ const ManageUsers = () => {
         {},
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
-      
+
       toast.success(
         `User ${user.is_active ? "deactivated" : "activated"} successfully`
       );
@@ -186,7 +191,7 @@ const ManageUsers = () => {
     if (result.isConfirmed) {
       try {
         await axios.delete(`${API_URL}/api/admin/users/${user.id}`, {
-          headers: { Authorization: `Bearer ${getToken()}` }
+          headers: { Authorization: `Bearer ${getToken()}` },
         });
         toast.success("User deleted successfully");
         fetchUsers();
@@ -209,9 +214,7 @@ const ManageUsers = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">
-          Manage Users
-        </h1>
+        <h1 className="text-2xl font-semibold text-gray-800">Manage Users</h1>
 
         <button
           onClick={openAddModal}
@@ -258,7 +261,8 @@ const ManageUsers = () => {
                       <span className="px-2 py-1 text-xs rounded bg-purple-100 text-purple-600">
                         Full Access
                       </span>
-                    ) : user.permissionLabels && user.permissionLabels.length > 0 ? (
+                    ) : user.permissionLabels &&
+                      user.permissionLabels.length > 0 ? (
                       user.permissionLabels.slice(0, 3).map((label, i) => (
                         <span
                           key={i}
@@ -268,13 +272,16 @@ const ManageUsers = () => {
                         </span>
                       ))
                     ) : (
-                      <span className="text-xs text-gray-400">No permissions</span>
-                    )}
-                    {user.permissionLabels && user.permissionLabels.length > 3 && (
-                      <span className="px-2 py-1 text-xs rounded bg-slate-100">
-                        +{user.permissionLabels.length - 3} more
+                      <span className="text-xs text-gray-400">
+                        No permissions
                       </span>
                     )}
+                    {user.permissionLabels &&
+                      user.permissionLabels.length > 3 && (
+                        <span className="px-2 py-1 text-xs rounded bg-slate-100">
+                          +{user.permissionLabels.length - 3} more
+                        </span>
+                      )}
                   </div>
                 </td>
 

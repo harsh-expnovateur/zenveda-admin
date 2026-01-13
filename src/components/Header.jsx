@@ -1,6 +1,12 @@
 import { FiSearch, FiBell, FiUser, FiMenu } from "react-icons/fi";
 
-const Header = ({ collapsed, onToggleSidebar }) => {
+const Header = ({ collapsed }) => {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const userName = user?.name || "User";
+  const userInitial = userName.charAt(0).toUpperCase();
+
   return (
     <header
       className={`fixed top-0 right-0 z-30 h-16
@@ -47,10 +53,10 @@ const Header = ({ collapsed, onToggleSidebar }) => {
         <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition">
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-400 
           flex items-center justify-center text-white text-sm font-semibold">
-            A
+            {userInitial}
           </div>
           <span className="hidden md:block text-sm font-medium text-gray-700">
-            Admin
+            {userName}
           </span>
         </button>
       </div>

@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 
+import { PermissionProvider } from "./context/PermissionContext";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
@@ -19,6 +20,8 @@ import DiscountManagement from "./pages/DiscountManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Settings from "./pages/Settings";
 import ManageUsers from "./pages/ManageUsers";
+import PermissionGuard from "./components/PermissionGuard";
+import ChangePassword from "./pages/ChangePassword";
 
 const Layout = () => {
   const location = useLocation();
@@ -39,13 +42,7 @@ const Layout = () => {
       {/* Main Content */}
       <div
         className={`flex-1 transition-all duration-300 max-w-full overflow-x-hidden
-        ${
-          !isLoginPage
-            ? collapsed
-              ? "ml-20"
-              : "ml-64"
-            : ""
-        }`}
+        ${!isLoginPage ? (collapsed ? "ml-20" : "ml-64") : ""}`}
       >
         {/* Header */}
         {!isLoginPage && (
@@ -63,7 +60,9 @@ const Layout = () => {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <PermissionGuard permission="dashboard">
+                    <Dashboard />
+                  </PermissionGuard>
                 </ProtectedRoute>
               }
             />
@@ -71,7 +70,9 @@ const Layout = () => {
               path="/orders"
               element={
                 <ProtectedRoute>
-                  <OrderManagement />
+                  <PermissionGuard permission="orders">
+                    <OrderManagement />
+                  </PermissionGuard>
                 </ProtectedRoute>
               }
             />
@@ -79,7 +80,9 @@ const Layout = () => {
               path="/customers"
               element={
                 <ProtectedRoute>
-                  <CustomerManagement />
+                  <PermissionGuard permission="customers">
+                    <CustomerManagement />
+                  </PermissionGuard>
                 </ProtectedRoute>
               }
             />
@@ -87,7 +90,9 @@ const Layout = () => {
               path="/tea-management"
               element={
                 <ProtectedRoute>
-                  <TeaManagement />
+                  <PermissionGuard permission="tea-management">
+                    <TeaManagement />
+                  </PermissionGuard>
                 </ProtectedRoute>
               }
             />
@@ -95,7 +100,9 @@ const Layout = () => {
               path="/manage-ingredients"
               element={
                 <ProtectedRoute>
-                  <ManageIngredients />
+                  <PermissionGuard permission="manage-ingredients">
+                    <ManageIngredients />
+                  </PermissionGuard>
                 </ProtectedRoute>
               }
             />
@@ -103,7 +110,9 @@ const Layout = () => {
               path="/discount"
               element={
                 <ProtectedRoute>
-                  <DiscountManagement />
+                  <PermissionGuard permission="discount">
+                    <DiscountManagement />
+                  </PermissionGuard>
                 </ProtectedRoute>
               }
             />
@@ -111,7 +120,9 @@ const Layout = () => {
               path="/settings"
               element={
                 <ProtectedRoute>
-                  <Settings />
+                  <PermissionGuard permission="settings">
+                    <Settings />
+                  </PermissionGuard>
                 </ProtectedRoute>
               }
             />
@@ -119,7 +130,17 @@ const Layout = () => {
               path="/settings/manage-users"
               element={
                 <ProtectedRoute>
-                  <ManageUsers />
+                  <PermissionGuard permission="manage-users">
+                    <ManageUsers />
+                  </PermissionGuard>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/change-password"
+              element={
+                <ProtectedRoute>
+                  <ChangePassword />
                 </ProtectedRoute>
               }
             />
@@ -162,7 +183,9 @@ const App = () => {
       />
 
       <Router>
-        <Layout />
+        <PermissionProvider>
+          <Layout />
+        </PermissionProvider>
       </Router>
     </>
   );

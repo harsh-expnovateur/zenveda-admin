@@ -14,26 +14,73 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from "/img/logo-2.png";
 import { useLogout } from "../hooks/useLogout";
-
+import { usePermissions } from "../context/PermissionContext";
 import toast from "react-hot-toast";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const logout = useLogout();
   const navigate = useNavigate();
+  const { hasPermission } = usePermissions();
 
-  const menuItems = [
-    { icon: FiHome, title: "Dashboard", path: "/dashboard" },
-    { icon: FiShoppingBag, title: "Order Management", path: "/orders" },
-    { icon: FiUsers, title: "Customers", path: "/customers" },
-    { icon: FiCoffee, title: "Tea Management", path: "/tea-management" },
+  // Define menu items with their required permissions
+  const allMenuItems = [
+    {
+      icon: FiHome,
+      title: "Dashboard",
+      path: "/dashboard",
+      permission: "dashboard",
+    },
+
+    {
+      icon: FiShoppingBag,
+      title: "Order Management",
+      path: "/orders",
+      permission: "orders",
+    },
+
+    {
+      icon: FiUsers,
+      title: "Customers",
+      path: "/customers",
+      permission: "customers",
+    },
+
+    {
+      icon: FiCoffee,
+      title: "Tea Management",
+      path: "/tea-management",
+      permission: "tea-management",
+    },
+
     {
       icon: FiLayers,
       title: "Manage Ingredients",
       path: "/manage-ingredients",
+      permission: "manage-ingredients",
     },
-    { icon: FiPercent, title: "Discount", path: "/discount" },
-    { icon: FiSliders, title: "Settings", path: "/settings" },
+
+    {
+      icon: FiPercent,
+      title: "Discount",
+      path: "/discount",
+      permission: "discount",
+    },
+
+    {
+      icon: FiSliders,
+      title: "Settings",
+      path: "/settings",
+      permission: "settings",
+    },
   ];
+
+  // Filter menu items based on permissions
+  const menuItems = allMenuItems.filter((item) => {
+    // If no permission required, always show
+    if (!item.permission) return true;
+    // Otherwise check if user has permission
+    return hasPermission(item.permission);
+  });
 
   return (
     <motion.aside
@@ -119,13 +166,14 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           );
         })}
       </nav>
+
       {/* Logout */}
       <div className="absolute bottom-6 w-full px-3">
         <button
           onClick={logout}
           className="group relative flex items-center gap-4 w-full px-4 py-3 
     rounded-xl text-gray-300 hover:bg-red-500/10 hover:text-red-400 
-    transition-all duration-300"
+    transition-all duration-300 cursor-pointer"
         >
           <motion.div
             whileHover={{ scale: 1.15 }}

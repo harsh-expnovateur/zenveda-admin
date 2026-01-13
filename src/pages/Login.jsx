@@ -4,9 +4,11 @@ import { FiLogIn, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import Swal from "sweetalert2";
 import axiosInstance from "../utils/axiosInstance";
 import logo from "/img/logo-2.png";
+import { usePermissions } from "../context/PermissionContext"; // ✅ added
 
 const Login = () => {
   const navigate = useNavigate();
+  const { refreshPermissions } = usePermissions(); // ✅ added
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +30,9 @@ const Login = () => {
       // Store access token and user info
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ Refresh permissions after login
+      await refreshPermissions();
 
       // Success message
       await Swal.fire({
