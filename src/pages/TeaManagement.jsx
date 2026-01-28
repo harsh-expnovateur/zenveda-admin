@@ -413,7 +413,7 @@ const TeaManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-gray-50 p-6 md:p-10">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/30 to-gray-50 p-6 md:p-10">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
@@ -435,7 +435,7 @@ const TeaManagement = () => {
                 setEditingTeaId(null);
                 setShowModal(true);
               }}
-              className="bg-gradient-to-r from-[#1f513f] to-[#2d7356] text-white px-6 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center gap-2 font-semibold"
+              className="bg-linear-to-r from-[#1f513f] to-[#2d7356] text-white px-6 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center gap-2 font-semibold"
             >
               <svg
                 className="w-5 h-5"
@@ -540,7 +540,7 @@ const TeaManagement = () => {
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gradient-to-r from-[#1f513f] to-[#2d7356] text-white">
+              <thead className="bg-linear-to-r from-[#1f513f] to-[#2d7356] text-white">
                 <tr>
                   <th className="p-4 text-left font-semibold">Tea Name</th>
                   <th className="p-4 text-left font-semibold">Slug</th>
@@ -593,7 +593,7 @@ const TeaManagement = () => {
                     >
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center">
+                          <div className="w-10 h-10 bg-linear-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center">
                             <svg
                               className="w-6 h-6 text-[#1f513f]"
                               fill="none"
@@ -632,8 +632,8 @@ const TeaManagement = () => {
                           onClick={() => toggleActive(tea.id, tea.is_active)}
                           className={`px-4 py-1.5 rounded-full text-white text-xs font-semibold transition-all hover:scale-105 ${
                             tea.is_active
-                              ? "bg-gradient-to-r from-green-500 to-green-600 shadow-sm"
-                              : "bg-gradient-to-r from-gray-400 to-gray-500"
+                              ? "bg-linear-to-r from-green-500 to-green-600 shadow-sm"
+                              : "bg-linear-to-r from-gray-400 to-gray-500"
                           }`}
                         >
                           {tea.is_active ? "Active" : "Inactive"}
@@ -668,7 +668,7 @@ const TeaManagement = () => {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-start z-50 px-4 pt-8 pb-12 overflow-y-auto">
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl relative max-h-full flex flex-col animate-fade-in">
               {/* Modal Header - Sticky */}
-              <div className="sticky top-0 bg-gradient-to-r from-[#1f513f] to-[#2d7356] text-white p-6 rounded-t-3xl z-10 shadow-md">
+              <div className="sticky top-0 bg-linear-to-r from-[#1f513f] to-[#2d7356] text-white p-6 rounded-t-3xl z-10 shadow-md">
                 <div className="flex justify-between items-center">
                   <div>
                     <h2 className="text-3xl font-bold mb-1">
@@ -707,7 +707,7 @@ const TeaManagement = () => {
               <div className="flex-1 overflow-y-auto px-8 py-6">
                 <form onSubmit={handleSubmit} className="space-y-8">
                   {/* Basic Info Section */}
-                  <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-6 border border-green-100">
+                  <div className="bg-linear-to-br from-green-50 to-blue-50 rounded-2xl p-6 border border-green-100">
                     <h3 className="text-xl font-bold text-[#1f513f] mb-4 flex items-center gap-2">
                       <svg
                         className="w-6 h-6"
@@ -801,7 +801,7 @@ const TeaManagement = () => {
                   </div>
 
                   {/* Package Selection */}
-                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100">
+                  <div className="bg-linear-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100">
                     <h3 className="text-xl font-bold text-[#1f513f] mb-4 flex items-center gap-2">
                       <svg
                         className="w-6 h-6"
@@ -901,7 +901,7 @@ const TeaManagement = () => {
                   </div>
 
                   {/* Ingredients Selection */}
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
+                  <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
                     <h3 className="text-xl font-bold text-[#1f513f] mb-4 flex items-center gap-2">
                       <svg
                         className="w-6 h-6"
@@ -962,7 +962,7 @@ const TeaManagement = () => {
                   </div>
 
                   {/* Content Sections */}
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-100">
+                  <div className="bg-linear-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-100">
                     <h3 className="text-xl font-bold text-[#1f513f] mb-2 flex items-center gap-2">
                       <svg
                         className="w-6 h-6"
@@ -1056,7 +1056,7 @@ const TeaManagement = () => {
                   </div>
 
                   {/* Brewing Ritual */}
-                  <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl p-6 border border-yellow-100">
+                  <div className="bg-linear-to-br from-yellow-50 to-amber-50 rounded-2xl p-6 border border-yellow-100">
                     <h3 className="text-xl font-bold text-[#1f513f] mb-4 flex items-center gap-2">
                       <svg
                         className="w-6 h-6"
@@ -1081,7 +1081,7 @@ const TeaManagement = () => {
                           className="bg-white border-2 border-gray-200 p-5 rounded-xl"
                         >
                           <div className="flex items-start gap-4 mb-3">
-                            <div className="flex-shrink-0 w-8 h-8 bg-[#1f513f] text-white rounded-full flex items-center justify-center font-bold">
+                            <div className="shrink-0 w-8 h-8 bg-[#1f513f] text-white rounded-full flex items-center justify-center font-bold">
                               {i + 1}
                             </div>
                             <div className="flex-1">
@@ -1163,7 +1163,7 @@ const TeaManagement = () => {
                   </div>
 
                   {/* Tea Images */}
-                  <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl p-6 border border-rose-100">
+                  <div className="bg-linear-to-br from-rose-50 to-pink-50 rounded-2xl p-6 border border-rose-100">
                     <h3 className="text-xl font-bold text-[#1f513f] mb-4 flex items-center gap-2">
                       <svg
                         className="w-6 h-6"
@@ -1228,7 +1228,7 @@ const TeaManagement = () => {
                                     : "border-gray-200 hover:border-gray-300"
                                 }`}
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex flex-col items-center justify-end gap-2 pb-3">
+                              <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex flex-col items-center justify-end gap-2 pb-3">
                                 {form.mainImageIndex !== i ? (
                                   <button
                                     type="button"
@@ -1274,7 +1274,7 @@ const TeaManagement = () => {
                   </div>
 
                   {/* Active Status */}
-                  <div className="bg-gradient-to-br from-gray-50 to-slate-50 rounded-2xl p-6 border border-gray-200">
+                  <div className="bg-linear-to-br from-gray-50 to-slate-50 rounded-2xl p-6 border border-gray-200">
                     <label className="flex items-center gap-3 cursor-pointer group">
                       <div className="relative">
                         <input
@@ -1321,7 +1321,7 @@ const TeaManagement = () => {
                   <button
                     type="submit"
                     onClick={handleSubmit}
-                    className="bg-gradient-to-r from-[#1f513f] to-[#2d7356] text-white px-10 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold flex items-center gap-2"
+                    className="bg-linear-to-r from-[#1f513f] to-[#2d7356] text-white px-10 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold flex items-center gap-2"
                   >
                     <svg
                       className="w-5 h-5"
