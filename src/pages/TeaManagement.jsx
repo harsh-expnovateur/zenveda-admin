@@ -8,6 +8,7 @@ const TeaManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingTeaId, setEditingTeaId] = useState(null);
+  const [packagesTouched, setPackagesTouched] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const emptyForm = {
@@ -119,8 +120,8 @@ const TeaManagement = () => {
         prev.mainImageIndex === index
           ? 0
           : prev.mainImageIndex > index
-          ? prev.mainImageIndex - 1
-          : prev.mainImageIndex;
+            ? prev.mainImageIndex - 1
+            : prev.mainImageIndex;
       return { ...prev, teaImages: newImages, mainImageIndex: newMainIndex };
     });
     setPreviews((prev) => ({
@@ -182,14 +183,14 @@ const TeaManagement = () => {
     e.preventDefault();
 
     const loadingToast = toast.loading(
-      editingTeaId ? "Updating tea..." : "Saving tea..."
+      editingTeaId ? "Updating tea..." : "Saving tea...",
     );
 
     try {
       const formData = new FormData();
 
       const ritualsWithText = form.brewingRitual.filter(
-        (r) => r.text && r.text.trim() !== ""
+        (r) => r.text && r.text.trim() !== "",
       );
 
       const brewingIconsToUpload = [];
@@ -200,12 +201,14 @@ const TeaManagement = () => {
             text: ritual.text,
             hasIcon: true,
             iconIndex: brewingIconsToUpload.length - 1,
+            existingIconUrl: null,
           };
         } else {
           return {
             text: ritual.text,
             hasIcon: false,
             iconIndex: -1,
+            existingIconUrl: ritual.existingIconUrl || null,
           };
         }
       });
@@ -218,10 +221,18 @@ const TeaManagement = () => {
         description: form.description,
         is_active: form.active,
         mainImageIndex: form.mainImageIndex || 0,
-        packages: form.selectedPackages.map((p) => ({
-          package_name: p,
-          selling_price: form.price[p.replace(/\s+/g, "_")] || "0",
-        })),
+        ...(packagesTouched && {
+          packages: form.selectedPackages.map((p) => {
+            const key = p.replace(/\s+/g, "_");
+            return {
+              package_name: p,
+              selling_price:
+                form.price[key] !== undefined && form.price[key] !== ""
+                  ? form.price[key]
+                  : null,
+            };
+          }),
+        }),
         sections: form.sections.filter((s) => s.title || s.content),
         rituals: ritualsData,
         ingredientIds: form.selectedIngredients,
@@ -260,7 +271,7 @@ const TeaManagement = () => {
             : "Tea saved successfully!",
           {
             id: loadingToast,
-          }
+          },
         );
 
         await fetchAllTeas();
@@ -312,7 +323,11 @@ const TeaManagement = () => {
               : [{ title: "", content: "" }],
           brewingRitual:
             tea.rituals?.length > 0
-              ? tea.rituals.map((r) => ({ text: r.step_text, icon: null }))
+              ? tea.rituals.map((r) => ({
+                  text: r.step_text,
+                  icon: null,
+                  existingIconUrl: r.icon_url || null,
+                }))
               : [{ text: "", icon: null }],
           teaImages: [],
           mainImageIndex:
@@ -324,11 +339,11 @@ const TeaManagement = () => {
         setPreviews({
           teaImages:
             tea.images?.map(
-              (img) => `http://localhost:5000/${img.image_url}`
+              (img) => `http://localhost:5000/${img.image_url}`,
             ) || [],
           brewing:
             tea.rituals?.map((r) =>
-              r.icon_url ? `http://localhost:5000/${r.icon_url}` : null
+              r.icon_url ? `http://localhost:5000/${r.icon_url}` : null,
             ) || [],
         });
 
@@ -339,12 +354,14 @@ const TeaManagement = () => {
       console.error("Failed to fetch tea details:", error);
       toast.error("Failed to load tea details");
     }
+
+    setPackagesTouched(false);
   };
 
   const handleDelete = async (teaId) => {
     if (
       window.confirm(
-        "Are you sure you want to delete this tea? This action cannot be undone."
+        "Are you sure you want to delete this tea? This action cannot be undone.",
       )
     ) {
       const loadingToast = toast.loading("Deleting tea...");
@@ -383,7 +400,7 @@ const TeaManagement = () => {
 
       if (result.success) {
         toast.success(
-          `Tea ${!currentStatus ? "activated" : "deactivated"} successfully`
+          `Tea ${!currentStatus ? "activated" : "deactivated"} successfully`,
         );
         await fetchAllTeas();
       } else {
@@ -819,12 +836,14 @@ const TeaManagement = () => {
                                 form.selectedPackages?.includes(pkg) || false
                               }
                               onChange={(e) => {
+                                setPackagesTouched(true);
+
                                 const isChecked = e.target.checked;
                                 setForm((prev) => {
                                   const updated = isChecked
                                     ? [...(prev.selectedPackages || []), pkg]
                                     : (prev.selectedPackages || []).filter(
-                                        (p) => p !== pkg
+                                        (p) => p !== pkg,
                                       );
                                   return { ...prev, selectedPackages: updated };
                                 });
@@ -833,7 +852,7 @@ const TeaManagement = () => {
                             />
                             {pkg}
                           </label>
-                        )
+                        ),
                       )}
                     </div>
 
@@ -919,7 +938,7 @@ const TeaManagement = () => {
                               <input
                                 type="checkbox"
                                 checked={form.selectedIngredients.includes(
-                                  ingredient.id
+                                  ingredient.id,
                                 )}
                                 onChange={() => toggleIngredient(ingredient.id)}
                                 className="w-4 h-4 accent-white"
