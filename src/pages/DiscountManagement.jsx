@@ -14,6 +14,8 @@ const DiscountManagement = () => {
   const [openModal, setOpenModal] = useState(false);
   const [discounts, setDiscounts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [teas, setTeas] = useState([]);
+  const [loadingTeas, setLoadingTeas] = useState(false);
 
   const API_BASE = "http://localhost:5000";
 
@@ -99,7 +101,7 @@ const DiscountManagement = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {

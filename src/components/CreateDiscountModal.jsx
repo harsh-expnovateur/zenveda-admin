@@ -23,6 +23,8 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
     get_quantity: "",
     min_cart_value: "",
     free_product: "",
+    free_product_package: "",
+    free_product_quantity: 1,
     start_date: "",
     start_time: "00:00",
     end_date: "",
@@ -42,6 +44,9 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
   const [selectedTeaIds, setSelectedTeaIds] = useState([]);
   const [selectAllTeas, setSelectAllTeas] = useState(false);
   const [loadingTeas, setLoadingTeas] = useState(false);
+  // Free product package states
+  const [freePackages, setFreePackages] = useState([]);
+  const [loadingPackages, setLoadingPackages] = useState(false);
 
   // Fetch teas when modal opens
   useEffect(() => {
@@ -67,6 +72,35 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
       setSelectAllTeas(false);
     }
   }, [selectedTeaIds, teas]);
+
+  useEffect(() => {
+    if (formData.type === "Free Product" && formData.free_product) {
+      fetchFreeProductPackages(formData.free_product);
+    } else {
+      setFreePackages([]);
+      setFormData((prev) => ({ ...prev, free_product_package: "" }));
+    }
+  }, [formData.free_product, formData.type]);
+
+  const fetchFreeProductPackages = async (teaId) => {
+    try {
+      setLoadingPackages(true);
+      const response = await fetch(`${API_BASE}/api/tea/${teaId}/packages`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setFreePackages(data.packages || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch packages", err);
+    } finally {
+      setLoadingPackages(false);
+    }
+  };
 
   if (!open) return null;
 
@@ -102,7 +136,7 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
     setSelectedTeaIds((prev) =>
       prev.includes(teaId)
         ? prev.filter((id) => id !== teaId)
-        : [...prev, teaId]
+        : [...prev, teaId],
     );
   };
 
@@ -238,6 +272,7 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
       get_quantity: "",
       min_cart_value: "",
       free_product: "",
+      free_product_quantity: 1,
       start_date: "",
       start_time: "00:00",
       end_date: "",
@@ -420,7 +455,8 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
               formData.type === "Cart Value Offer") && (
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Discount Percentage (%) <span className="text-red-500">*</span>
+                  Discount Percentage (%){" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -447,7 +483,8 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
             {formData.type === "Flat Price Off" && (
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Flat Discount Amount (₹) <span className="text-red-500">*</span>
+                  Flat Discount Amount (₹){" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -541,21 +578,64 @@ const CreateDiscountModal = ({ open, onClose, onCreate }) => {
             )}
 
             {formData.type === "Free Product" && (
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Free Product
-                </label>
-                <select
-                  name="free_product"
-                  value={formData.free_product}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="">Select Product</option>
-                  <option>Masala Tea</option>
-                  <option>Green Tea</option>
-                  <option>Herbal Tea</option>
-                </select>
+              <div className="grid grid-cols-3 gap-4">
+                {/* Free Product */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Free Product
+                  </label>
+                  <select
+                    name="free_product"
+                    value={formData.free_product}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                  >
+                    <option value="">Select Free Tea</option>
+                    {teas.map((tea) => (
+                      <option key={tea.id} value={tea.id}>
+                        {tea.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Package */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Package
+                  </label>
+                  <select
+                    name="free_product_package"
+                    value={formData.free_product_package}
+                    onChange={handleInputChange}
+                    disabled={!formData.free_product || loadingPackages}
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-slate-100"
+                  >
+                    <option value="">
+                      {loadingPackages ? "Loading..." : "Select Package"}
+                    </option>
+                    {freePackages.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id}>
+                        {pkg.package_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Quantity */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Free Quantity
+                  </label>
+                  <input
+                    type="number"
+                    name="free_product_quantity"
+                    value={formData.free_product_quantity}
+                    onChange={handleInputChange}
+                    min="1"
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
               </div>
             )}
           </div>
