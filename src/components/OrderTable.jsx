@@ -42,7 +42,7 @@ const OrderTable = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${getAuthToken()}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -77,7 +77,7 @@ const OrderTable = ({
           headers: {
             Authorization: `Bearer ${getAuthToken()}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -98,7 +98,7 @@ const OrderTable = ({
           headers: {
             Authorization: `Bearer ${getAuthToken()}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -361,7 +361,7 @@ const OrderTable = ({
                                 headers: {
                                   Authorization: `Bearer ${getAuthToken()}`,
                                 },
-                              }
+                              },
                             );
                             onShipmentCreated();
                           }}
@@ -378,6 +378,30 @@ const OrderTable = ({
               )}
             </tbody>
           </table>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-between items-center mt-4">
+              <button
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              <span className="text-sm">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-gray-800 text-white rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

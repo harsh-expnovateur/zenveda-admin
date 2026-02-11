@@ -22,6 +22,7 @@ import Settings from "./pages/Settings";
 import ManageUsers from "./pages/ManageUsers";
 import PermissionGuard from "./components/PermissionGuard";
 import ChangePassword from "./pages/ChangePassword";
+import ManageReviews from "./pages/ManageReviews";
 
 const Layout = () => {
   const location = useLocation();
@@ -112,6 +113,16 @@ const Layout = () => {
                 <ProtectedRoute>
                   <PermissionGuard permission="discount">
                     <DiscountManagement />
+                  </PermissionGuard>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reviews"
+              element={
+                <ProtectedRoute>
+                  <PermissionGuard permission="reviews">
+                    <ManageReviews />
                   </PermissionGuard>
                 </ProtectedRoute>
               }

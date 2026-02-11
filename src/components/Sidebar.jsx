@@ -8,6 +8,7 @@ import {
   FiLayers,
   FiSliders,
   FiPercent,
+  FiMessageSquare,
   FiLogOut,
 } from "react-icons/fi";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -67,6 +68,13 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     },
 
     {
+      icon: FiMessageSquare,
+      title: "Reviews",
+      path: "/reviews",
+      permission: "reviews",
+    },
+
+    {
       icon: FiSliders,
       title: "Settings",
       path: "/settings",
@@ -87,7 +95,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
       animate={{ width: collapsed ? 80 : 260 }}
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
       className="h-screen fixed left-0 top-0 z-40 
-      bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900
+      bg-linear-to-b from-slate-900 via-slate-800 to-slate-900
       backdrop-blur-xl text-white shadow-2xl overflow-hidden"
     >
       {/* Header */}
@@ -131,7 +139,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
               {/* Active Gradient Bar */}
               <span
                 className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-1.5 
-                rounded-r bg-gradient-to-b from-emerald-400 to-green-500 
+                rounded-r bg-linear-to-b from-emerald-400 to-green-500 
                 opacity-0 group-[.active]:opacity-100 transition"
               />
 
@@ -139,7 +147,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
               <motion.div
                 whileHover={{ scale: 1.15 }}
                 transition={{ type: "spring", stiffness: 300 }}
-                className="min-w-[20px]"
+                className="min-w-5"
               >
                 <Icon size={20} />
               </motion.div>
@@ -178,7 +186,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           <motion.div
             whileHover={{ scale: 1.15 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="min-w-[20px]"
+            className="min-w-5"
           >
             <FiLogOut size={20} />
           </motion.div>
