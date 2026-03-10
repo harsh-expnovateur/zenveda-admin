@@ -3,8 +3,9 @@ import Swal from "sweetalert2";
 import axiosInstance from "../utils/axiosInstance";
 
 const AddReviewModal = ({ isOpen, onClose, onSuccess }) => {
-  const [teas, setTeas] = useState([]);
-  const [formData, setFormData] = useState({
+
+  // 🔥 Initial form state
+  const initialFormState = {
     customer_name: "",
     tea_id: "",
     tea_name: "",
@@ -12,10 +13,18 @@ const AddReviewModal = ({ isOpen, onClose, onSuccess }) => {
     rating: 0,
     review_text: "",
     media: null,
-  });
+  };
+
+  const [teas, setTeas] = useState([]);
+  const [formData, setFormData] = useState(initialFormState);
 
   useEffect(() => {
-    if (isOpen) fetchTeas();
+    if (isOpen) {
+      fetchTeas();
+
+      // 🔥 Reset form every time modal opens
+      setFormData(initialFormState);
+    }
   }, [isOpen]);
 
   const fetchTeas = async () => {
@@ -36,7 +45,7 @@ const AddReviewModal = ({ isOpen, onClose, onSuccess }) => {
     const { name, value, files } = e.target;
 
     if (name === "media") {
-      setFormData({ ...formData, media: files[0] });
+      setFormData({ ...formData, media: files });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -74,7 +83,9 @@ const AddReviewModal = ({ isOpen, onClose, onSuccess }) => {
       data.append("review_text", formData.review_text);
 
       if (formData.media) {
-        data.append("media", formData.media);
+        for (let i = 0; i < formData.media.length; i++) {
+          data.append("media", formData.media[i]);
+        }
       }
 
       await axiosInstance.post("/admin/reviews", data, {
@@ -83,8 +94,12 @@ const AddReviewModal = ({ isOpen, onClose, onSuccess }) => {
 
       Swal.fire("Success", "Review added successfully!", "success");
 
+      // 🔥 Reset form after submit
+      setFormData(initialFormState);
+
       onSuccess(); // refresh table
       onClose();
+
     } catch (err) {
       Swal.fire("Error", "Failed to add review", "error");
     }
@@ -169,6 +184,7 @@ const AddReviewModal = ({ isOpen, onClose, onSuccess }) => {
             type="file"
             name="media"
             accept="image/*,video/*"
+            multiple
             onChange={handleChange}
             className="w-full"
           />
